@@ -58,8 +58,3 @@ Replace `index.js` with the entry point of your application if it's named differ
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
-
-## Contact
-
-For any questions or suggestions, please contact [your email] or open an issue in the repository.
-
