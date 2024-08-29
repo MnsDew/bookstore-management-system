@@ -1,0 +1,136 @@
+
+class Book {
+  constructor(id, title, author, price, quantity) {
+    this.id = id;
+    this.title = title;
+    this.author = author;
+    this.price = price;
+    this.quantity = quantity;
+  }
+}
+
+
+----------------------------------------------------------------------------------
+
+
+
+class BookStore {
+  constructor() {
+    this.books = new Map(); // Using Map for efficient lookup
+  }
+
+  addBook(book) {
+    if (this.books.has(book.id)) {
+      console.log(`A book with ID ${book.id} already exists.`);
+      return;
+    }
+    this.books.set(book.id, book);
+    console.log(`Book "${book.title}" added successfully!`);
+  }
+
+  updateBook(id, updatedInfo) {
+    if (!this.books.has(id)) {
+      console.log(`No book found with ID ${id}.`);
+      return;
+    }
+    const book = this.books.get(id);
+    Object.assign(book, updatedInfo);
+    console.log(`Book with ID ${id} updated successfully!`);
+  }
+
+  deleteBook(id) {
+    if (this.books.delete(id)) {
+      console.log(`Book with ID ${id} deleted successfully!`);
+    } else {
+      console.log(`No book found with ID ${id}.`);
+    }
+  }
+
+  displayAllBooks() {
+    if (this.books.size === 0) {
+      console.log("No books available in the store.");
+      return;
+    }
+    console.log("\nAvailable Books:");
+    console.log("----------------");
+    for (let book of this.books.values()) {
+      this.displayBookDetails(book);
+    }
+  }
+
+  searchBooks(query) {
+    const results = [];
+    for (let book of this.books.values()) {
+      if (
+        book.id === query ||
+        book.title.toLowerCase().includes(query.toLowerCase()) ||
+        book.author.toLowerCase().includes(query.toLowerCase())
+      ) {
+        results.push(book);
+      }
+    }
+
+    if (results.length > 0) {
+      console.log(`\nSearch Results for "${query}":`);
+      console.log("----------------------------");
+      results.forEach((book) => this.displayBookDetails(book));
+    } else {
+      console.log(`No books found matching the query: "${query}".`);
+    }
+  }
+
+  sellBook(id, quantity, balance) {
+    if (!this.books.has(id)) {
+      console.log(`No book found with ID ${id}.`);
+      return;
+    }
+    const book = this.books.get(id);
+
+    if (quantity > book.quantity) {
+      console.log(
+        `Insufficient stock. Available quantity for "${book.title}" is ${book.quantity}.`
+      );
+      return;
+    }
+
+    const totalPrice = book.price * quantity;
+
+    if (balance < totalPrice) {
+      console.log(
+        `Insufficient balance. The total price is $${totalPrice.toFixed(
+          2
+        )}, but your balance is $${balance.toFixed(2)}.`
+      );
+      return;
+    }
+
+    book.quantity -= quantity;
+    console.log("\nPurchase Successful! Here is your receipt:");
+    console.log("----------------------------------------");
+    console.log(`Title   : ${book.title}`);
+    console.log(`Author  : ${book.author}`);
+    console.log(`Price   : $${book.price.toFixed(2)}`);
+    console.log(`Quantity: ${quantity}`);
+    console.log(`Total   : $${totalPrice.toFixed(2)}`);
+    console.log("----------------------------------------");
+    console.log(
+      `Remaining Balance: $${(balance - totalPrice).toFixed(2)}\n`
+    );
+  }
+
+  displayBookDetails(book) {
+    console.log(`ID      : ${book.id}`);
+    console.log(`Title   : ${book.title}`);
+    console.log(`Author  : ${book.author}`);
+    console.log(`Price   : $${book.price.toFixed(2)}`);
+    console.log(`Quantity: ${book.quantity}`);
+    console.log("----------------------------");
+  }
+}
+
+
+
+
+---------------------------------------------------------------------------------------
+
+

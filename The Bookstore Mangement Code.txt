@@ -1,0 +1,269 @@
+ // besmAllah
+
+const prompt = require("prompt-sync")({ sigint: true });
+
+let books = [
+  // BOOK ID , BOOK TITLE , AUTHOR , PRICE , QUANTITY
+
+  [1, "Start with why", "Simon Sinek", 80.0, 13],
+  [2, "But how do it know", "J.Clarck Scott", 59.9, 22],
+  [3, "Clean Code", "Robert Cecil Martin", 50.0, 5],
+  [4, "Zero to One", "Peter Thiel", 45.0, 12],
+  [5, "You don't know JS", "Kyle Simpson", 39.9, 9],
+];
+
+function addBooks(book_id, book_title, AUTHOR, PRICE, QUANTITY) {
+  for (let i = 0; i < books.length; i++) {
+    if (books[i][0] === book_id) {
+      console.log("you have same ID of the book you can not add it");
+      return;
+    }
+  }
+  books.push([book_id, book_title, AUTHOR, PRICE, QUANTITY]);
+  console.log("Book added successfully!");
+}
+
+
+function updateBooks(book_id, new_title, new_author, new_price, new_quantity) {
+  // Find the index of the book with the specified ID
+  const bookIndex = books.findIndex((book) => book[0] === book_id);
+
+  if (bookIndex !== -1) {
+    // Update the book details
+    books[bookIndex][1] = new_title;
+    books[bookIndex][2] = new_author;
+    books[bookIndex][3] = new_price;
+    books[bookIndex][4] = new_quantity;
+
+    console.log(`Book with ID ${book_id} updated successfully!`);
+  } else {
+    console.log("Invalid ID ... no book found with this ID to update.");
+  }
+}
+
+
+
+function deleteBooks(book_id) {
+  // Find the index of the book with the specified ID
+  const bookIndex = books.findIndex((book) => book[0] === book_id);
+
+  if (bookIndex !== -1) {
+    // Remove the book from the books array
+    books.splice(bookIndex, 1);
+    console.log(`Book with ID ${book_id} deleted successfully!`);
+  } else {
+    console.log("Invalid ID ... no book found with this ID to delete.");
+  }
+}
+
+// to print the books just call the function displayBooks();
+function displayBooks(query = null) {
+  if (books.length === 0) {
+    console.log("No books to display");
+    return;
+  }
+
+  let found = false;
+
+  if (query === null) {
+    const password = prompt("Please enter the password to see all books: ");
+    const correctedPassword = "1234";
+
+    if (password === correctedPassword) {
+      console.log("Here are all books: ");
+
+      for (let i = 0; i < books.length; i++) {
+        console.log(
+          `Book ID: ${books[i][0]}, Title: ${books[i][1]}, Author: ${books[i][2]}, Price: ${books[i][3]}, Quantity: ${books[i][4]}`
+        );
+      }
+    } else {
+      console.log("Incorrect password. Access denied.");
+    }
+  } else {
+    if (Array.isArray(query)) {
+      query.forEach((id) => {
+        for (let i = 0; i < books.length; i++) {
+          if (books[i][0] === id) {
+            console.log(
+              `Book ID: ${books[i][0]}, Title: ${books[i][1]}, Author: ${books[i][2]}, Price: ${books[i][3]}, Quantity: ${books[i][4]}`
+            );
+            found = true;
+          }
+        }
+      });
+    } else {
+      // Handle both numeric and string search queries
+      for (let i = 0; i < books.length; i++) {
+        if (
+          books[i][0] === parseInt(query) || // Check by ID (numeric)
+          books[i][1].toLowerCase().includes(query.toLowerCase()) || // Check by Title (string)
+          books[i][2].toLowerCase().includes(query.toLowerCase()) // Check by Author (string)
+        ) {
+          console.log(
+            `Book ID: ${books[i][0]}, Title: ${books[i][1]}, Author: ${books[i][2]}, Price: ${books[i][3]}, Quantity: ${books[i][4]}`
+          );
+          found = true;
+        }
+      }
+    }
+
+    if (!found) {
+      console.log(`No book found matching the query: ${query}`);
+    }
+  }
+}
+
+function SellandBill() {
+  let wantedQuantity;
+  let searchedbook;
+  let balance;
+  let isFound = false;
+  let bookIndex;
+
+  searchedbook = prompt("Enter the title of the book you want: ");
+  for (let i = 0; i < books.length; i++) {
+    if (books[i][1].toLowerCase().includes(searchedbook.toLowerCase())) {
+      console.log("We found the book");
+      isFound = true;
+      bookIndex = i;
+      break;
+    }
+  }
+  if (!isFound) {
+    console.log("No book found with this title");
+    return;
+  }
+
+  wantedQuantity = parseInt(prompt("Enter the quantity you want: "));
+
+  if (wantedQuantity <= books[bookIndex][4]) {
+    balance = parseFloat(
+      prompt("To buy a book and recive a recipt enter your balance")
+    );
+
+    if (balance >= books[bookIndex][3]) {
+      console.log("Congrats! you got that book and here is you recipt ");
+      console.log(
+        ` Title: ${books[bookIndex][1]}, Author: ${books[bookIndex][2]}, Price: ${books[bookIndex][3]}, Quantity: ${wantedQuantity}`,
+
+        (books[bookIndex][4] -= wantedQuantity)
+      );
+    } else {
+      console.log("sorry you don't have enough amount to buy this book! ");
+    }
+  } else {
+    console.log(
+      `\nNot enough quantity in the stock ... this the quantity we have right now : ${books[bookIndex][4]} `
+    );
+  }
+}
+
+//addBooks(6, "new book", "the author", 100.0, 20);
+//deleteBooks(6);
+//updateBooks(6, "Belive in yourself", "Mans", 1000.0, 3);
+// to search for any book any display its information , you can easily write this:
+// if you wanna specifec book or more than one you can query in this way by its ID : displayBooks([1,2]); this for multiaple
+// and, if you wanna search for one just displayBooks([2]);
+// as well, if you wanna display all books : displayBooks(); but you need first enter the correct password , otherwise you will be denied.
+// also , there is check if the book is not there or the ID not correct , it won't be shown like: displayBooks([9]);
+//displayBooks();
+
+//However i decided to let the user choose from the menu whatever to do with the books
+
+//so let's see the menu
+
+function menu() {
+  while (true) {
+    console.log("Welcome to menu of the book store Mangement ");
+    console.log("1. to add a book");
+    console.log("2. to update a book");
+    console.log("3. to delete a book");
+    console.log("4. to display all books");
+    console.log("5. to display specfic book");
+    console.log("6. to search for books");
+    console.log("7. To buy a book and print a recipt");
+    console.log("8. to exit");
+
+    const choice = prompt("choose an option from 1-8: ");
+
+    switch (choice) {
+      case "1":
+        const addID = parseInt(prompt("Enter the ID for the book: "));
+        const addTITLE = prompt("Add the title: ");
+        const addAUTHOR = prompt("Add the author name: ");
+        const addPRICE = parseFloat(prompt("Enter the price of the book: "));
+        const addQUANTITY = parseInt(
+          prompt("Enter the quantity of the book: ")
+        );
+
+        addBooks(addID, addTITLE, addAUTHOR, addPRICE, addQUANTITY);
+        break;
+
+      case "2":
+        const updateID = parseInt(prompt("Enter the ID to update the book: "));
+
+        // Check if the book with the specified ID exists
+        const bookToUpdate = books.find((book) => book[0] === updateID);
+
+        if (bookToUpdate) {
+          const updateTITLE = prompt("Add the new title to update the book: ");
+          const updateAUTHOR = prompt(
+            "Add the new author name to update the book: "
+          );
+          const updatePRICE = parseFloat(
+            prompt("Enter the new price of the book to update: ")
+          );
+          const updateQUANTITY = parseInt(
+            prompt("Enter the new quantity to update the book: ")
+          );
+
+          updateBooks(
+            updateID,
+            updateTITLE,
+            updateAUTHOR,
+            updatePRICE,
+            updateQUANTITY
+          );
+        } else {
+          console.log("Invalid ID ... cannot be updated");
+        }
+        break;
+
+      case "3":
+        const deleteID = parseInt(prompt("Enter the id to delete the book: "));
+        deleteBooks(deleteID);
+        break;
+
+      case "4":
+        displayBooks();
+        break;
+
+      case "5":
+        const queryIDS = prompt(
+          "Enter the IDS to display (Comma - sepertaed ):"
+        )
+          .split(",")
+          .map(Number);
+        displayBooks(queryIDS);
+        break;
+
+      case "6":
+        const searchQuery = prompt("Enter ID , title , or Author to search: ");
+        displayBooks(searchQuery);
+        break;
+
+      case "7":
+        SellandBill();
+        break;
+      case "8":
+        console.log("Exiting the program ... Goodbye!");
+        return;
+
+      default:
+        console.log("Invalid option ... Please choose a valid option.");
+    }
+  }
+}
+
+menu();
